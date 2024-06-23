@@ -11,6 +11,7 @@
             flex-direction: column;
             align-items: center;
             margin: 20px;
+            background-color: #ADD8E6;
         }
         header {
             margin-bottom: 20px;
@@ -32,7 +33,6 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
-            background-color: #f9f9f9;
             overflow: hidden;
             position: relative;
         }
@@ -52,44 +52,36 @@
             justify-content: center;
             align-items: center;
         }
-        .game-tile img {
-            max-width: 50px;
-            max-height: 50px;
-            margin-bottom: 10px;
-        }
+        .wordle { background-color: lightgreen; }
+        .mini-crossword { background-color: grey; }
+        .spelling-bee { background-color: lightyellow; }
+        .letter-boxed { background-color: lightcoral; }
+        .betweenle { background-color: violet; }
+        .tiles { background-color: transparent; }
+        .generic-word-game { background-color: orange; }
+        .sudoku { background-color: white; }
         section {
             width: 80%;
             margin: 20px 0;
-        }
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <header>
         <div id="datetime"></div>
+        <div>Counter: <span id="counter">0</span></div>
     </header>
     
     <section>
         <h2>Play Games</h2>
-        <div class="game-tile"><a href="https://www.nytimes.com/games/wordle/" target="_blank"><img src="https://www.nytimes.com/games/wordle/favicon.ico" alt="Wordle">Wordle</a></div>
-        <div class="game-tile"><a href="https://www.nytimes.com/crosswords/game/mini" target="_blank"><img src="https://www.nytimes.com/crosswords/game/mini/favicon.ico" alt="Mini Crossword">Mini Crossword</a></div>
-        <div class="game-tile"><a href="https://www.nytimes.com/games/strands" target="_blank"><img src="https://www.nytimes.com/games/strands/favicon.ico" alt="Spelling Bee">Spelling Bee</a></div>
-        <div class="game-tile"><a href="https://www.nytimes.com/puzzles/letter-boxed" target="_blank"><img src="https://www.nytimes.com/puzzles/letter-boxed/favicon.ico" alt="Letter Boxed">Letter Boxed</a></div>
-        <div class="game-tile"><a href="https://betweenle.com/" target="_blank"><img src="https://betweenle.com/favicon.ico" alt="Betweenle">Betweenle</a></div>
-        <div class="game-tile"><a href="https://www.nytimes.com/puzzles/tiles" target="_blank"><img src="https://www.nytimes.com/puzzles/tiles/favicon.ico" alt="Tiles">Tiles</a></div>
-        <div class="game-tile"><a href="https://pixletters.com/" target="_blank"><img src="https://pixletters.com/favicon.ico" alt="Pixletters">Pixletters</a></div>
-        <div class="game-tile"><a href="http://genericwordgame.com/" target="_blank"><img src="http://genericwordgame.com/favicon.ico" alt="Generic Word Game">Generic Word Game</a></div>
-        <div class="game-tile"><a href="https://www.nytimes.com/puzzles/sudoku" target="_blank"><img src="https://www.nytimes.com/puzzles/sudoku/favicon.ico" alt="Sudoku">Sudoku</a></div>
-    </section>
-    
-    <section>
-        <h2>Notes</h2>
-        <textarea id="notes" rows="10" placeholder="Write your notes here..."></textarea>
+        <div class="game-tile wordle"><a href="https://www.nytimes.com/games/wordle/" target="_blank">Wordle</a></div>
+        <div class="game-tile mini-crossword"><a href="https://www.nytimes.com/crosswords/game/mini" target="_blank">Mini Crossword</a></div>
+        <div class="game-tile spelling-bee"><a href="https://www.nytimes.com/games/strands" target="_blank">Spelling Bee</a></div>
+        <div class="game-tile letter-boxed"><a href="https://www.nytimes.com/puzzles/letter-boxed" target="_blank">Letter Boxed</a></div>
+        <div class="game-tile betweenle"><a href="https://betweenle.com/" target="_blank">Betweenle</a></div>
+        <div class="game-tile tiles"><a href="https://www.nytimes.com/puzzles/tiles" target="_blank">Tiles</a></div>
+        <div class="game-tile generic-word-game"><a href="http://genericwordgame.com/" target="_blank">Generic Word Game</a></div>
+        <div class="game-tile sudoku"><a href="https://www.nytimes.com/puzzles/sudoku" target="_blank">Sudoku</a></div>
     </section>
 
     <script>
@@ -99,25 +91,31 @@
             const dateString = now.toLocaleDateString('en-GB', options);
             const timeString = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
             document.getElementById('datetime').textContent = `${dateString}, ${timeString}`;
-        }
 
-        function saveNotes() {
-            const notes = document.getElementById('notes').value;
-            localStorage.setItem('notes', notes);
-        }
-
-        function loadNotes() {
-            const notes = localStorage.getItem('notes');
-            if (notes) {
-                document.getElementById('notes').value = notes;
+            // Check if the date has changed
+            const lastDate = localStorage.getItem('lastDate');
+            if (lastDate !== dateString) {
+                // Increment the counter if the date has changed
+                let counter = localStorage.getItem('counter');
+                counter = counter ? parseInt(counter) + 1 : 1;
+                localStorage.setItem('counter', counter);
+                localStorage.setItem('lastDate', dateString);
+                document.getElementById('counter').textContent = counter;
             }
         }
 
-        document.getElementById('notes').addEventListener('input', saveNotes);
+        function loadCounter() {
+            const counter = localStorage.getItem('counter');
+            if (counter) {
+                document.getElementById('counter').textContent = counter;
+            } else {
+                document.getElementById('counter').textContent = 0;
+            }
+        }
 
         updateDateTime();
         setInterval(updateDateTime, 1000);
-        loadNotes();
+        loadCounter();
     </script>
 </body>
 </html>
